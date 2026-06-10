@@ -8,6 +8,8 @@
 [![test workflow](https://github.com/container2wasm/container2wasm/actions/workflows/tests.yml/badge.svg)](https://github.com/container2wasm/container2wasm/actions/workflows/tests.yml?query=branch%3Amain++)
 [![FOSSA Status](https://app.fossa.com/api/projects/custom%2B162%2Fgithub.com%2Fcontainer2wasm%2Fcontainer2wasm.svg?type=shield&issueType=license)](https://app.fossa.com/projects/custom%2B162%2Fgithub.com%2Fcontainer2wasm%2Fcontainer2wasm?ref=badge_shield&issueType=license)
 
+<img src="./docs/images/logo.png" width="400">
+
 container2wasm is a container-to-wasm image converter that enables to run the container on WASM.
 
 - Converts a container to WASM with emulation by Bochs (for x86_64 containers), TinyEMU (for riscv64 containers) and QEMU.
@@ -213,6 +215,43 @@ Options
 - `--external-bundle`: Do not embed container image to the Wasm image but mount it during runtime
 - `--help, -h`: show help
 - `--version, -v: `print the version
+
+### c2w-net
+
+Runs the user-space network stack used for networking support in converted WASM images.
+It can connect to a WASI runtime's network socket, listen for browser networking over WebSocket, or invoke a WASI image with `wasmtime`.
+
+Usage:
+
+- `c2w-net [options] socket-address`
+- `c2w-net --listen-ws [options] listen-address`
+- `c2w-net --invoke [options] wasm-file [wasm options] [COMMAND] [ARG...]`
+
+Arguments:
+
+- `socket-address`: TCP address of the WASI runtime network socket.
+- `listen-address`: address for the WebSocket listener, for example `localhost:8888`.
+- `wasm-file [wasm options] [COMMAND] [ARG...]`: WASM image and arguments passed to `wasmtime` when using `--invoke`.
+
+Options:
+
+- `--debug`: Enable debug print.
+- `--enable-tls`: Enable TLS for the WebSocket connection.
+- `--invoke`: Invoke the container with networking support using `wasmtime`.
+- `--listen-ws`: Listen on a WebSocket address specified by `listen-address`.
+- `--mac value`: MAC address assigned to the container (default: `"02:00:00:00:00:01"`).
+- `-p value`: Map a port between host and guest (`host:guest` or `ip:host:guest`). The `--mac` flag must be set correctly.
+- `--wasi-addr value`: IP address used to communicate between WASI and the network stack when using `--invoke` (default: `"127.0.0.1:1234"`).
+- `--wasmtime-cli-13`: Use the old wasmtime CLI syntax for version 13 or earlier.
+- `--ws-cert value`: TLS certificate for the WebSocket connection.
+- `--ws-key value`: TLS key for the WebSocket connection.
+
+Examples:
+
+```
+c2w-net --listen-ws localhost:8888
+c2w-net --invoke -p localhost:8000:80 /tmp/out/httpd.wasm --net=socket
+```
 
 ### Run-time flags for WASM image
 

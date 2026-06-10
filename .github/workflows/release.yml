@@ -19,10 +19,10 @@ jobs:
     env:
       OUTPUT_DIR: ${{ github.workspace }}/builds
     steps:
-    - uses: actions/setup-go@v5
+    - uses: actions/setup-go@v6
       with:
-        go-version: 1.24.x
-    - uses: actions/checkout@v4
+        go-version: 1.26.x
+    - uses: actions/checkout@v6
     - name: Build binaries
       run: |
         PREFIX=${OUTPUT_DIR} make artifacts
